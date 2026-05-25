@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Platform Engineering Radar</title>
+    <link>https://example.test/platform</link>
+    <description>Internal engineering radar for reliability and delivery work.</description>
+    <item>
+      <guid isPermaLink="false">platform-2026-02-09-cache-stampede</guid>
+      <title>Cache stampede drill validates checkout safeguards</title>
+      <link>https://example.test/platform/cache-stampede-drill</link>
+      <pubDate>Mon, 09 Feb 2026 10:20:00 GMT</pubDate>
+      <description>Load tests confirmed lock coalescing during catalog invalidation.</description>
+      <content:encoded><![CDATA[<p>The platform team ran a controlled cache stampede drill and confirmed checkout latency stayed within the agreed budget.</p>]]></content:encoded>
+    </item>
+    <item>
+      <guid isPermaLink="false">platform-2026-02-02-runbook-refresh</guid>
+      <title>Incident runbooks add owner handoff checkpoints</title>
+      <link>https://example.test/platform/runbook-owner-handoffs</link>
+      <pubDate>Mon, 02 Feb 2026 13:05:00 GMT</pubDate>
+      <description>Every sev-two runbook now names a handoff reviewer.</description>
+      <content:encoded><![CDATA[<p>Runbook updates include owner handoff checkpoints, customer update templates, and post-incident review timing.</p>]]></content:encoded>
+    </item>
+    <item>
+      <guid isPermaLink="false">platform-2026-01-26-deploy-freeze</guid>
+      <title>Deploy freeze calendar published for launch week</title>
+      <link>https://example.test/platform/deploy-freeze-calendar</link>
+      <pubDate>Mon, 26 Jan 2026 15:40:00 GMT</pubDate>
+      <description>Launch week changes require platform approval after Wednesday.</description>
+      <content:encoded><![CDATA[<p>The release calendar lists service owners, freeze windows, and rollback coordinators for launch week.</p>]]></content:encoded>
+    </item>
+    <item>
+      <guid isPermaLink="false">platform-2026-01-19-queue-depths</guid>
+      <title>Queue depth alerts separate ingestion from billing</title>
+      <link>https://example.test/platform/queue-depth-alerts</link>
+      <pubDate>Mon, 19 Jan 2026 09:50:00 GMT</pubDate>
+      <description>Separate alert rules reduce noisy pages during billing exports.</description>
+      <content:encoded><![CDATA[<p>New queue depth alerts split ingestion lag from billing export backlog, making dashboards easier to triage.</p>]]></content:encoded>
+    </item>
+    <item>
+      <guid isPermaLink="false">platform-2026-01-08-tls-rotation</guid>
+      <title>TLS rotation dry run completes ahead of partner deadline</title>
+      <link>https://example.test/platform/tls-rotation-dry-run</link>
+      <pubDate>Thu, 08 Jan 2026 12:10:00 GMT</pubDate>
+      <description>Partner endpoints accepted the new intermediate certificate chain.</description>
+      <content:encoded><![CDATA[<p>The dry run verified partner callbacks, mobile clients, and webhook signature validation.</p>]]></content:encoded>
+    </item>
+  </channel>
+</rss>

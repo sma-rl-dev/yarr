@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Customer Voice Digest</title>
+    <link>https://example.test/customer-voice</link>
+    <description>Weekly support and research signals from customer-facing teams.</description>
+    <item>
+      <guid isPermaLink="false">voice-2026-02-11-enterprise-onboarding</guid>
+      <title>Enterprise onboarding notes request clearer SSO copy</title>
+      <link>https://example.test/customer-voice/enterprise-sso-copy</link>
+      <pubDate>Wed, 11 Feb 2026 17:25:00 GMT</pubDate>
+      <description>Research participants asked for exact identity provider examples.</description>
+      <content:encoded><![CDATA[<p>Five enterprise onboarding calls asked for clearer SSO setup copy and a preflight checklist.</p>]]></content:encoded>
+    </item>
+    <item>
+      <guid isPermaLink="false">voice-2026-02-04-refund-reasons</guid>
+      <title>Support tags refund reason confusion in EU shops</title>
+      <link>https://example.test/customer-voice/refund-reasons-eu</link>
+      <pubDate>Wed, 04 Feb 2026 18:00:00 GMT</pubDate>
+      <description>Refund exports need localized reason labels for finance teams.</description>
+      <content:encoded><![CDATA[<p>Support tagged recurring confusion around refund reason labels in French and German storefront exports.</p>]]></content:encoded>
+    </item>
+    <item>
+      <guid isPermaLink="false">voice-2026-01-30-mobile-receipts</guid>
+      <title>Mobile receipt preview wins praise from beta cohort</title>
+      <link>https://example.test/customer-voice/mobile-receipt-preview</link>
+      <pubDate>Fri, 30 Jan 2026 10:35:00 GMT</pubDate>
+      <description>Beta merchants described the receipt preview as launch ready.</description>
+      <content:encoded><![CDATA[<p>The beta cohort praised mobile receipt previews, especially the compact tax and discount summary.</p>]]></content:encoded>
+    </item>
+    <item>
+      <guid isPermaLink="false">voice-2026-01-22-admin-search</guid>
+      <title>Admin search misses archived subscription IDs</title>
+      <link>https://example.test/customer-voice/admin-search-archived-subscriptions</link>
+      <pubDate>Thu, 22 Jan 2026 19:15:00 GMT</pubDate>
+      <description>Support escalation notes identify archived subscription lookup gaps.</description>
+      <content:encoded><![CDATA[<p>Support escalations show admins often paste archived subscription IDs and expect search to find closed accounts.</p>]]></content:encoded>
+    </item>
+    <item>
+      <guid isPermaLink="false">voice-2026-01-15-tax-banner</guid>
+      <title>Tax banner copy reduces January setup tickets</title>
+      <link>https://example.test/customer-voice/tax-banner-copy</link>
+      <pubDate>Thu, 15 Jan 2026 08:45:00 GMT</pubDate>
+      <description>January ticket volume dropped after banner copy clarified setup deadlines.</description>
+      <content:encoded><![CDATA[<p>The new tax banner copy reduced January setup tickets by explaining region deadlines and document requirements.</p>]]></content:encoded>
+    </item>
+  </channel>
+</rss>

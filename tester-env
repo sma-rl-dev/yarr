@@ -1,0 +1,157 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+APP_IMAGE="${YARR_IMAGE:-tester-env-yarr}"
+RUN_ID="${YARR_RUN_ID:-default}"
+PORT="${YARR_PORT:-7070}"
+CONTAINER="${YARR_CONTAINER:-tester-env-yarr-${RUN_ID}}"
+VOLUME="${YARR_VOLUME:-yarr-data-${RUN_ID}}"
+BASE_URL="${YARR_URL:-http://localhost:${PORT}}"
+
+usage() {
+  printf 'usage: %s {build|deploy|reset|seed|verify|status|logs|stop}\n' "$0" >&2
+}
+
+wait_http() {
+  python3 - "$BASE_URL" <<'PY'
+import sys, time, urllib.request
+url = sys.argv[1]
+last = None
+for _ in range(80):
+    try:
+        with urllib.request.urlopen(url, timeout=1) as r:
+            if r.status == 200:
+                sys.exit(0)
+    except Exception as exc:
+        last = exc
+    time.sleep(0.25)
+raise SystemExit(f"server did not become ready at {url}: {last}")
+PY
+}
+
+api_seed() {
+  python3 - "$BASE_URL" <<'PY'
+import json, sys, time, urllib.request
+
+base = sys.argv[1].rstrip('/')
+
+def request(method, path, data=None):
+    body = None if data is None else json.dumps(data).encode()
+    req = urllib.request.Request(base + path, data=body, method=method)
+    req.add_header('Content-Type', 'application/json')
+    with urllib.request.urlopen(req, timeout=20) as res:
+        raw = res.read()
+        if not raw:
+            return None
+        return json.loads(raw.decode())
+
+folders = {
+    'Product Updates': request('POST', '/api/folders', {'title': 'Product Updates'})['id'],
+    'Engineering Radar': request('POST', '/api/folders', {'title': 'Engineering Radar'})['id'],
+    'Customer Signals': request('POST', '/api/folders', {'title': 'Customer Signals'})['id'],
+}
+
+feeds = [
+    ('Product Updates', 'aurora-changelog.xml'),
+    ('Engineering Radar', 'platform-radar.xml'),
+    ('Customer Signals', 'customer-voice.xml'),
+]
+for folder, filename in feeds:
+    result = request('POST', '/api/feeds', {
+        'url': f'http://127.0.0.1:{base.rsplit(":", 1)[1]}/static/tester-env/rss/{filename}',
+        'folder_id': folders[folder],
+    })
+    if result.get('status') != 'success':
+        raise SystemExit(f'feed import failed for {filename}: {result}')
+
+deadline = time.time() + 10
+items = []
+while time.time() < deadline:
+    items = request('GET', '/api/items')['list']
+    if len(items) == 15:
+        break
+    time.sleep(0.2)
+if len(items) != 15:
+    raise SystemExit(f'expected 15 seeded items, found {len(items)}')
+
+status_by_title = {
+    'Mobile receipt preview wins praise from beta cohort': 'starred',
+    'TLS rotation dry run completes ahead of partner deadline': 'read',
+    'Seat limit warnings arrive before renewal': 'read',
+}
+for item in items:
+    status = status_by_title.get(item['title'])
+    if status:
+        request('PUT', f"/api/items/{item['id']}", {'status': status})
+
+print('seeded folders=3 feeds=3 items=15 unread=12 starred=1 read=2')
+PY
+}
+
+api_verify() {
+  python3 - "$BASE_URL" <<'PY'
+import json, sys, urllib.parse, urllib.request
+
+base = sys.argv[1].rstrip('/')
+
+def get(path, params=None):
+    if params:
+        path += '?' + urllib.parse.urlencode(params)
+    with urllib.request.urlopen(base + path, timeout=10) as res:
+        return json.loads(res.read().decode())
+
+folders = get('/api/folders')
+feeds = get('/api/feeds')
+items = get('/api/items')['list']
+unread = get('/api/items', {'status': 'unread'})['list']
+starred = get('/api/items', {'status': 'starred'})['list']
+search = get('/api/items', {'search': 'quartz lighthouse'})['list']
+
+assert [f['title'] for f in folders] == ['Customer Signals', 'Engineering Radar', 'Product Updates'], folders
+assert [f['title'] for f in feeds] == ['Aurora SaaS Changelog', 'Customer Voice Digest', 'Platform Engineering Radar'], feeds
+assert len(items) == 15, len(items)
+assert len(unread) == 12, len(unread)
+assert len(starred) == 1 and starred[0]['title'] == 'Mobile receipt preview wins praise from beta cohort', starred
+assert len(search) == 1 and search[0]['title'] == 'Quartz lighthouse audit closes accessibility gaps', search
+assert items[0]['title'] == 'Enterprise onboarding notes request clearer SSO copy', items[0]
+assert items[-1]['title'] == 'TLS rotation dry run completes ahead of partner deadline', items[-1]
+
+print('verified folders=3 feeds=3 items=15 unread=12 starred=1 search="quartz lighthouse"=1 newest="Enterprise onboarding notes request clearer SSO copy"')
+PY
+}
+
+case "${1:-}" in
+  build)
+    docker build -t "$APP_IMAGE" -f etc/dockerfile .
+    ;;
+  deploy)
+    docker rm -f "$CONTAINER" >/dev/null 2>&1 || true
+    docker run -d --name "$CONTAINER" -p "${PORT}:${PORT}" -v "${VOLUME}:/data" "$APP_IMAGE" -addr "0.0.0.0:${PORT}" -db /data/yarr.db
+    wait_http
+    ;;
+  reset)
+    docker rm -f "$CONTAINER" >/dev/null 2>&1 || true
+    docker volume rm "$VOLUME" >/dev/null 2>&1 || true
+    ;;
+  seed)
+    wait_http
+    api_seed
+    ;;
+  verify)
+    wait_http
+    api_verify
+    ;;
+  status)
+    docker ps --filter "name=^/${CONTAINER}$" --format '{{.Names}} {{.Status}} {{.Ports}}'
+    ;;
+  logs)
+    docker logs "$CONTAINER"
+    ;;
+  stop)
+    docker rm -f "$CONTAINER" >/dev/null 2>&1 || true
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
+esac

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Aurora SaaS Changelog</title>
+    <link>https://example.test/aurora</link>
+    <description>Release notes for the Aurora customer operations platform.</description>
+    <item>
+      <guid isPermaLink="false">aurora-2026-02-10-checkout-api</guid>
+      <title>Checkout API adds partial capture controls</title>
+      <link>https://example.test/aurora/checkout-api-partial-capture</link>
+      <pubDate>Tue, 10 Feb 2026 09:15:00 GMT</pubDate>
+      <description>Merchants can now capture split shipments without reopening the order.</description>
+      <content:encoded><![CDATA[<p>The February Aurora release adds partial capture controls for the Checkout API. The rollout note includes verification steps for fulfillment, refunds, and payment ledger exports.</p>]]></content:encoded>
+    </item>
+    <item>
+      <guid isPermaLink="false">aurora-2026-02-06-risk-dashboard</guid>
+      <title>Risk dashboard highlights manual review queues</title>
+      <link>https://example.test/aurora/risk-dashboard-review-queues</link>
+      <pubDate>Fri, 06 Feb 2026 14:30:00 GMT</pubDate>
+      <description>New queue cards separate high-value holds from routine fraud checks.</description>
+      <content:encoded><![CDATA[<p>Risk operations teams get cards for high-value holds, repeat buyer reviews, and account takeover investigations.</p>]]></content:encoded>
+    </item>
+    <item>
+      <guid isPermaLink="false">aurora-2026-01-29-quartz-lighthouse</guid>
+      <title>Quartz lighthouse audit closes accessibility gaps</title>
+      <link>https://example.test/aurora/quartz-lighthouse-audit</link>
+      <pubDate>Thu, 29 Jan 2026 11:00:00 GMT</pubDate>
+      <description>The quartz lighthouse audit phrase is included for deterministic search checks.</description>
+      <content:encoded><![CDATA[<p>The quartz lighthouse audit fixed keyboard traps in billing setup and improved contrast on the usage timeline.</p>]]></content:encoded>
+    </item>
+    <item>
+      <guid isPermaLink="false">aurora-2026-01-20-billing-webhooks</guid>
+      <title>Billing webhook retries expose last delivery status</title>
+      <link>https://example.test/aurora/billing-webhook-retries</link>
+      <pubDate>Tue, 20 Jan 2026 16:45:00 GMT</pubDate>
+      <description>Each webhook endpoint now shows the latest retry result.</description>
+      <content:encoded><![CDATA[<p>Administrators can inspect retry attempts, response codes, and the last successful delivery timestamp.</p>]]></content:encoded>
+    </item>
+    <item>
+      <guid isPermaLink="false">aurora-2026-01-12-seat-limits</guid>
+      <title>Seat limit warnings arrive before renewal</title>
+      <link>https://example.test/aurora/seat-limit-warnings</link>
+      <pubDate>Mon, 12 Jan 2026 08:00:00 GMT</pubDate>
+      <description>Workspace owners receive deterministic renewal warnings in-app.</description>
+      <content:encoded><![CDATA[<p>Workspace owners see a banner when projected seat usage crosses the renewal threshold.</p>]]></content:encoded>
+    </item>
+  </channel>
+</rss>
