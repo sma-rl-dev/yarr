@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_IMAGE="${YARR_IMAGE:-tester-env-yarr}"
-RUN_ID="${YARR_RUN_ID:-default}"
-PORT="${YARR_PORT:-7070}"
+# IMAGE_TAG set by scripts/rl-env to a content-addressed tag so identical
+# (baseline, patch-set) combos share an image. Manual invocations get :dev.
+APP_IMAGE="${IMAGE_TAG:-${YARR_IMAGE:-tester-env-yarr:dev}}"
+RUN_ID="${RUN_ID:-${YARR_RUN_ID:-default}}"
+PORT="${PORT:-${YARR_PORT:-7070}}"
 CONTAINER="${YARR_CONTAINER:-tester-env-yarr-${RUN_ID}}"
 VOLUME="${YARR_VOLUME:-yarr-data-${RUN_ID}}"
 BASE_URL="${YARR_URL:-http://localhost:${PORT}}"
