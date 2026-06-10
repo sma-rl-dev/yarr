@@ -12,6 +12,7 @@ BASE_URL="${YARR_URL:-http://localhost:${PORT}}"
 TESTER_ENV_PROJECT="${TESTER_ENV_PROJECT:-tester-env}"
 TESTER_ENV_APP="${TESTER_ENV_APP:-yarr}"
 TESTER_ENV_SCENARIO="${TESTER_ENV_SCENARIO:-manual}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 usage() {
   printf 'usage: %s {build|deploy|reset|seed|verify|status|logs|stop}\n' "$0" >&2
@@ -132,9 +133,15 @@ case "${1:-}" in
       --label "tester-env.app=${TESTER_ENV_APP}" \
       --label "tester-env.scenario=${TESTER_ENV_SCENARIO}" \
       -t "$APP_IMAGE" \
-      -f etc/dockerfile .
+      -f "$SCRIPT_DIR/etc/dockerfile" "$SCRIPT_DIR"
     ;;
   deploy)
+    docker build \
+      --label "tester-env.project=${TESTER_ENV_PROJECT}" \
+      --label "tester-env.app=${TESTER_ENV_APP}" \
+      --label "tester-env.scenario=${TESTER_ENV_SCENARIO}" \
+      -t "$APP_IMAGE" \
+      -f "$SCRIPT_DIR/etc/dockerfile" "$SCRIPT_DIR"
     docker rm -f "$CONTAINER" >/dev/null 2>&1 || true
     docker volume create \
       --label "tester-env.project=${TESTER_ENV_PROJECT}" \
