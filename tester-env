@@ -18,6 +18,25 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 usage() {
   printf 'usage: %s {build|deploy|reset|seed|verify|status|logs|stop}\n' "$0" >&2
+  printf '  build   rebuild IMAGE_TAG from this source (manual runs default to tester-env-yarr:dev)\n' "$0" >&2
+  printf '  deploy  build IMAGE_TAG only when it is absent, then start it\n' "$0" >&2
+  printf '  IMAGE_TAG is set by scripts/rl-env to a content-addressed tag; leave it unset for :dev\n' "$0" >&2
+}
+
+# The single build recipe for both `build` and `deploy`: absolute script dir so
+# the context works when scripts/rl-env invokes this CLI from a foreign cwd, and
+# the run labels the cleanup/audit guards look for.
+build_image() {
+  docker build \
+    --label "tester-env.project=${TESTER_ENV_PROJECT}" \
+    --label "tester-env.app=${TESTER_ENV_APP}" \
+    --label "tester-env.scenario=${TESTER_ENV_SCENARIO}" \
+    -t "$APP_IMAGE" \
+    -f "$SCRIPT_DIR/etc/dockerfile" "$SCRIPT_DIR"
+}
+
+image_present() {
+  docker image inspect "$APP_IMAGE" >/dev/null 2>&1
 }
 
 wait_http() {
@@ -130,20 +149,17 @@ PY
 
 case "${1:-}" in
   build)
-    docker build -t "$APP_IMAGE" -f etc/dockerfile .
+    # Manual build always rebuilds: a local :dev tag may be arbitrarily stale,
+    # so `./tester-env build` must never silently keep serving it.
+    build_image
     ;;
   deploy)
     # The content-addressed $APP_IMAGE was never built here: docker fell
     # through to a denied registry pull (exit 125). The tag covers baseline
     # ref + tooling digest + patch set, so an existing tag already is the
     # image for this exact combination; otherwise build it from this source.
-    if ! docker image inspect "$APP_IMAGE" >/dev/null 2>&1; then
-      docker build \
-        --label "tester-env.project=${TESTER_ENV_PROJECT}" \
-        --label "tester-env.app=${TESTER_ENV_APP}" \
-        --label "tester-env.scenario=${TESTER_ENV_SCENARIO}" \
-        -t "$APP_IMAGE" \
-        -f "$SCRIPT_DIR/etc/dockerfile" "$SCRIPT_DIR"
+    if ! image_present; then
+      build_image
     fi
     docker rm -f "$CONTAINER" >/dev/null 2>&1 || true
     docker volume create \
